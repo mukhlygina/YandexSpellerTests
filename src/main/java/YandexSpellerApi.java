@@ -1,18 +1,31 @@
+import beans.YandexSpellerResponse;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by yulia_atlasova@epam.com.
  */
 public class YandexSpellerApi {
-    private static final String YANDEX_SPELLER_API_URI = "http://speller.yandex.net/services/spellservice.json/checkText";
-    private static final String PARAM_TEXT = "text";
-    private static final String PARAM_OPTIONS = "options";
-    private static final String PARAM_LANG = "lang";
+    public static final String YANDEX_SPELLER_API_URI = "https://speller.yandex.net/services/spellservice.json/checkText";
+    public static final String PARAM_TEXT = "text";
+    public static final String PARAM_OPTIONS = "options";
+    public static final String PARAM_LANG = "lang";
 
+    enum Languages{
+        RU("ru"),
+        UK("uk"),
+        EN("en");
+        String languageCode;
+        private Languages(String lang){
+            this.languageCode=lang;
+        }
+    }
 
     private YandexSpellerApi() {
     }
@@ -56,7 +69,8 @@ public class YandexSpellerApi {
         return new ApiBuilder(gcApi);
     }
 
-   // public static GeoCoderResponse getGeoCoderJsonFromResp(Response response){
-     //   return new Gson().fromJson(response.asString(), GeoCoderResponse.class);
-   // }
+    public static List<YandexSpellerResponse> getYandexSpellerResp(Response response){
+        Type respListType = new TypeToken<List<YandexSpellerResponse>>() {}.getType();
+        return new Gson().fromJson(response.asString(), respListType);
+    }
 }
