@@ -1,8 +1,7 @@
-import beans.YandexSpellerResponse;
+import beans.YandexSpellerAnswer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.authentication.AuthenticationScheme;
 import com.jayway.restassured.builder.RequestSpecBuilder;
 import com.jayway.restassured.builder.ResponseSpecBuilder;
 import com.jayway.restassured.http.ContentType;
@@ -11,7 +10,6 @@ import com.jayway.restassured.specification.RequestSpecification;
 import com.jayway.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpStatus;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -71,10 +69,9 @@ class YandexSpellerApi {
         return new ApiBuilder(gcApi);
     }
 
-    //get ready Speller answer object form api response
-    static List<YandexSpellerResponse> getYandexSpellerResp(Response response){
-        Type respListType = new TypeToken<List<YandexSpellerResponse>>() {}.getType();
-        return new Gson().fromJson(response.asString(), respListType);
+    //get ready Speller answers list form api response
+    static List<YandexSpellerAnswer> getYandexSpellerAnswers(Response response){
+        return new Gson().fromJson(response.asString(), new TypeToken<List<YandexSpellerAnswer>>() {}.getType());
     }
 
     //set base request and response specifications tu use in tests

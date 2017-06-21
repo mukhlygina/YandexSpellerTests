@@ -1,16 +1,16 @@
-import beans.YandexSpellerResponse;
+import beans.YandexSpellerAnswer;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.isEmptyString;
 import static org.hamcrest.Matchers.lessThan;
 
 /**
@@ -50,7 +50,7 @@ public class TestYandexSpellerJSON {
 
     // different http methods calls
     @Test
-    public void spellerApiCallsWithDifferentMethods(){
+    public void spellerApiCallsWithDifferentMethods() {
         //GET
         RestAssured.given().param(YandexSpellerApi.PARAM_TEXT, wrongWord1)
                 .log().everything()
@@ -91,12 +91,11 @@ public class TestYandexSpellerJSON {
         RestAssured.given().param(YandexSpellerApi.PARAM_TEXT, wrongWord1)
                 .log().everything()
                 .delete(YandexSpellerApi.YANDEX_SPELLER_API_URI).prettyPeek()
-        .then()
-                .body(isEmptyOrNullString())
+                .then()
+//                .body(isEmptyOrNullString())
                 .statusCode(HttpStatus.SC_METHOD_NOT_ALLOWED)
                 .statusLine("HTTP/1.1 405 Method not allowed");
     }
-
 
 
     // use base request and response specifications to form request and validate response.
@@ -113,15 +112,15 @@ public class TestYandexSpellerJSON {
     //validate an object we've got in API response
     @Test
     public void validateSpellerAnswerAsAnObject() {
-        List<YandexSpellerResponse> responses =
-                YandexSpellerApi.getYandexSpellerResp(
-                        YandexSpellerApi.with().text("motherr+fatherr").callApi()
-                                .then().statusCode(HttpStatus.SC_OK)
-                              //  .body(Matchers.contains("mother"))
-
-                                .extract().response());
-        System.out.println(responses.get(0).word);
-
+        List<YandexSpellerAnswer> answers =
+                YandexSpellerApi.getYandexSpellerAnswers(
+                        YandexSpellerApi.with().text("motherr+fatherr," + wrongWord1).callApi());
+        assertThat("expected number of answers is wrong.", answers.size(), equalTo(3));
+        assertThat(answers.get(0).word, equalTo("motherr"));
+        assertThat(answers.get(1).word, equalTo("fatherr"));
+        assertThat(answers.get(0).s.get(0), equalTo("mother"));
+        assertThat(answers.get(1).s.get(0), equalTo("father"));
+        assertThat(answers.get(2).s.get(0), equalTo(rightWord1));
     }
 
 }
