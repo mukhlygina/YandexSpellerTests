@@ -2,34 +2,37 @@ import beans.YandexSpellerResponse;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.authentication.AuthenticationScheme;
+import com.jayway.restassured.builder.RequestSpecBuilder;
+import com.jayway.restassured.builder.ResponseSpecBuilder;
+import com.jayway.restassured.http.ContentType;
 import com.jayway.restassured.response.Response;
+import com.jayway.restassured.specification.RequestSpecification;
+import com.jayway.restassured.specification.ResponseSpecification;
+import org.apache.http.HttpStatus;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
+
+import static org.hamcrest.Matchers.lessThan;
 
 /**
  * Created by yulia_atlasova@epam.com.
  */
-public class YandexSpellerApi {
-    public static final String YANDEX_SPELLER_API_URI = "https://speller.yandex.net/services/spellservice.json/checkText";
-    public static final String PARAM_TEXT = "text";
-    public static final String PARAM_OPTIONS = "options";
-    public static final String PARAM_LANG = "lang";
+class YandexSpellerApi {
 
-    enum Languages{
-        RU("ru"),
-        UK("uk"),
-        EN("en");
-        String languageCode;
-        private Languages(String lang){
-            this.languageCode=lang;
-        }
-    }
+    //useful constants for API under test
+    static final String YANDEX_SPELLER_API_URI = "https://speller.yandex.net/services/spellservice.json/checkText";
+    static final String PARAM_TEXT = "text";
+    static final String PARAM_OPTIONS = "options";
+    static final String PARAM_LANG = "lang";
 
     private YandexSpellerApi() {
     }
 
+    //builder pattern
     private HashMap<String, String> params = new HashMap<String, String>();
 
     public static class ApiBuilder {
@@ -39,7 +42,7 @@ public class YandexSpellerApi {
             spellerApi = gcApi;
         }
 
-        public ApiBuilder text(String text) {
+        ApiBuilder text(String text) {
             spellerApi.params.put(PARAM_TEXT, text);
             return this;
         }
@@ -54,23 +57,43 @@ public class YandexSpellerApi {
             return this;
         }
 
-        public Response callApi() {
-            Response response = RestAssured.with()
+        Response callApi() {
+            return RestAssured.with()
                     .queryParams(spellerApi.params)
                     .log().all()
                     .get(YANDEX_SPELLER_API_URI).prettyPeek();
-            return response;
         }
     }
 
 
-    public static ApiBuilder with() {
+    static ApiBuilder with() {
         YandexSpellerApi gcApi = new YandexSpellerApi();
         return new ApiBuilder(gcApi);
     }
 
-    public static List<YandexSpellerResponse> getYandexSpellerResp(Response response){
+    //get ready Speller answer object form api response
+    static List<YandexSpellerResponse> getYandexSpellerResp(Response response){
         Type respListType = new TypeToken<List<YandexSpellerResponse>>() {}.getType();
         return new Gson().fromJson(response.asString(), respListType);
     }
+
+    //set base request and response specifications tu use in tests
+    static ResponseSpecification successResponse(){
+        return new ResponseSpecBuilder()
+                .expectContentType(ContentType.JSON)
+                .expectHeader("Connection", "keep-alive")
+                .expectResponseTime(lessThan(2000L))
+                .expectStatusCode(HttpStatus.SC_OK)
+                .build();
+    }
+
+    static RequestSpecification baseRequestConfiguration(){
+        return new RequestSpecBuilder()
+                .setAccept(ContentType.XML)
+                .addHeader("custom header2", "header2.value")
+                .addQueryParam("requestID", new Random().nextLong())
+                .setBaseUri(YANDEX_SPELLER_API_URI)
+                .build();
+    }
+
 }
