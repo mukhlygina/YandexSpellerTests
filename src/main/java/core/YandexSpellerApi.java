@@ -3,13 +3,13 @@ package core;
 import beans.YandexSpellerAnswer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.builder.RequestSpecBuilder;
-import com.jayway.restassured.builder.ResponseSpecBuilder;
-import com.jayway.restassured.http.ContentType;
-import com.jayway.restassured.response.Response;
-import com.jayway.restassured.specification.RequestSpecification;
-import com.jayway.restassured.specification.ResponseSpecification;
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpStatus;
 
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import static core.YandexSpellerConstants.*;
 import static org.hamcrest.Matchers.lessThan;
 
 /**
- * Created by yulia_atlasova@epam.com.
+ * Created by yulia_atlasova@epam.com
  * Describes Yandex Speller REST API
  */
 public class YandexSpellerApi {
@@ -62,8 +62,8 @@ public class YandexSpellerApi {
     }
 
     public static ApiBuilder with() {
-        YandexSpellerApi gcApi = new YandexSpellerApi();
-        return new ApiBuilder(gcApi);
+        YandexSpellerApi api = new YandexSpellerApi();
+        return new ApiBuilder(api);
     }
 
 
@@ -78,7 +78,7 @@ public class YandexSpellerApi {
         return new ResponseSpecBuilder()
                 .expectContentType(ContentType.JSON)
                 .expectHeader("Connection", "keep-alive")
-                .expectResponseTime(lessThan(2000L))
+                .expectResponseTime(lessThan(20000L))
                 .expectStatusCode(HttpStatus.SC_OK)
                 .build();
     }
@@ -91,5 +91,4 @@ public class YandexSpellerApi {
                 .setBaseUri(YANDEX_SPELLER_API_URI)
                 .build();
     }
-
 }

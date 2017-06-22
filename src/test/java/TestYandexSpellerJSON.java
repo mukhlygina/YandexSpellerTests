@@ -1,7 +1,7 @@
 import beans.YandexSpellerAnswer;
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.http.ContentType;
 import core.YandexSpellerApi;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -26,9 +26,7 @@ public class TestYandexSpellerJSON {
         RestAssured
                 .given()
                     .queryParam(PARAM_TEXT, wrongWordEn)
-                    .parameters(PARAM_LANG, Languages.EN)
-                    .formParameter(PARAM_OPTIONS, "1")
-                    .and()
+                    .params(PARAM_LANG, Languages.EN, "CustomParameter", "valueOfParam")
                     .accept(ContentType.JSON)
                     .auth().basic("abcName", "abcPassword")
                     .header("custom header1", "header1.value")
@@ -45,7 +43,7 @@ public class TestYandexSpellerJSON {
                             Matchers.stringContainsInOrder(Arrays.asList(wrongWordEn, rightWordEn)),
                             Matchers.containsString("\"code\":1")))
                     .contentType(ContentType.JSON)
-                    .time(lessThan(2000L)); // Milliseconds
+                    .time(lessThan(20000L)); // Milliseconds
     }
 
     // different http methods calls
@@ -145,7 +143,7 @@ public class TestYandexSpellerJSON {
     public void validateSpellerAnswerAsAnObject() {
         List<YandexSpellerAnswer> answers =
                 YandexSpellerApi.getYandexSpellerAnswers(
-                        YandexSpellerApi.with().text("motherr+fatherr," + wrongWordEn).callApi());
+                        YandexSpellerApi.with().text("motherr fatherr," + wrongWordEn).callApi());
         assertThat("expected number of answers is wrong.", answers.size(), equalTo(3));
         assertThat(answers.get(0).word, equalTo("motherr"));
         assertThat(answers.get(1).word, equalTo("fatherr"));

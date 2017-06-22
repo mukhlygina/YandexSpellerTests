@@ -1,7 +1,7 @@
 package core;
 
 /**
- * Created by yulia-atlasova on 22/06/2017.
+ * Created by yulia_atlasova@epam.com on 22/06/2017.
  * Constants of YandexSpeller
  */
 public class YandexSpellerConstants {

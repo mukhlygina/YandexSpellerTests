@@ -1,14 +1,12 @@
 package core;
 
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.builder.RequestSpecBuilder;
-import com.jayway.restassured.path.xml.XmlPath;
-import com.jayway.restassured.response.Response;
-import com.jayway.restassured.specification.RequestSpecification;
+import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 
 import java.util.HashMap;
 
-import static com.jayway.restassured.parsing.Parser.XML;
 import static core.YandexSpellerConstants.*;
 
 /**
@@ -28,7 +26,7 @@ public class YandexSpellerSOAP {
     //builder pattern
     private YandexSpellerSOAP(){}
 
-    private HashMap<String, String> params = new HashMap<String, String>();
+    private HashMap<String, String> params = new HashMap<>();
 
     public static class SOAPBuilder {
         YandexSpellerSOAP spellerSOAP;
@@ -65,12 +63,11 @@ public class YandexSpellerSOAP {
 
 
             return RestAssured.with()
-                    .specification(spellerSOAPreqSpec)
+                    .spec(spellerSOAPreqSpec)
                     .body(soapBody)
                     .log().all().with()
                     .post().prettyPeek();
         }
-
     }
 
 
@@ -78,5 +75,4 @@ public class YandexSpellerSOAP {
         core.YandexSpellerSOAP soap = new YandexSpellerSOAP();
         return new SOAPBuilder(soap);
     }
-
 }
