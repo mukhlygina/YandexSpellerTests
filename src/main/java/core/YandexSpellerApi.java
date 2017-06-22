@@ -1,3 +1,5 @@
+package core;
+
 import beans.YandexSpellerAnswer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -14,23 +16,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import static core.YandexSpellerConstants.*;
 import static org.hamcrest.Matchers.lessThan;
 
 /**
  * Created by yulia_atlasova@epam.com.
+ * Describes Yandex Speller REST API
  */
-class YandexSpellerApi {
+public class YandexSpellerApi {
 
-    //useful constants for API under test
-    static final String YANDEX_SPELLER_API_URI = "https://speller.yandex.net/services/spellservice.json/checkText";
-    static final String PARAM_TEXT = "text";
-    static final String PARAM_OPTIONS = "options";
-    static final String PARAM_LANG = "lang";
-
-    private YandexSpellerApi() {
-    }
 
     //builder pattern
+    private YandexSpellerApi() {
+    }
     private HashMap<String, String> params = new HashMap<String, String>();
 
     public static class ApiBuilder {
@@ -40,7 +38,7 @@ class YandexSpellerApi {
             spellerApi = gcApi;
         }
 
-        ApiBuilder text(String text) {
+        public ApiBuilder text(String text) {
             spellerApi.params.put(PARAM_TEXT, text);
             return this;
         }
@@ -50,12 +48,12 @@ class YandexSpellerApi {
             return this;
         }
 
-        public ApiBuilder language(String language) {
-            spellerApi.params.put(PARAM_LANG, language);
+        public ApiBuilder language(Languages language) {
+            spellerApi.params.put(PARAM_LANG, language.languageCode);
             return this;
         }
 
-        Response callApi() {
+        public Response callApi() {
             return RestAssured.with()
                     .queryParams(spellerApi.params)
                     .log().all()
@@ -63,19 +61,20 @@ class YandexSpellerApi {
         }
     }
 
-
-    static ApiBuilder with() {
+    public static ApiBuilder with() {
         YandexSpellerApi gcApi = new YandexSpellerApi();
         return new ApiBuilder(gcApi);
     }
 
+
     //get ready Speller answers list form api response
-    static List<YandexSpellerAnswer> getYandexSpellerAnswers(Response response){
+    public static List<YandexSpellerAnswer> getYandexSpellerAnswers(Response response){
         return new Gson().fromJson(response.asString(), new TypeToken<List<YandexSpellerAnswer>>() {}.getType());
     }
 
+
     //set base request and response specifications tu use in tests
-    static ResponseSpecification successResponse(){
+    public static ResponseSpecification successResponse(){
         return new ResponseSpecBuilder()
                 .expectContentType(ContentType.JSON)
                 .expectHeader("Connection", "keep-alive")
@@ -84,7 +83,7 @@ class YandexSpellerApi {
                 .build();
     }
 
-    static RequestSpecification baseRequestConfiguration(){
+    public static RequestSpecification baseRequestConfiguration(){
         return new RequestSpecBuilder()
                 .setAccept(ContentType.XML)
                 .addHeader("custom header2", "header2.value")
