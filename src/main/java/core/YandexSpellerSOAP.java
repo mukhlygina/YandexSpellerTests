@@ -2,11 +2,13 @@ package core;
 
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.builder.RequestSpecBuilder;
+import com.jayway.restassured.path.xml.XmlPath;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
 import java.util.HashMap;
 
+import static com.jayway.restassured.parsing.Parser.XML;
 import static core.YandexSpellerConstants.*;
 
 /**
@@ -65,7 +67,7 @@ public class YandexSpellerSOAP {
             return RestAssured.with()
                     .specification(spellerSOAPreqSpec)
                     .body(soapBody)
-                    .log().all()
+                    .log().all().with()
                     .post().prettyPeek();
         }
 

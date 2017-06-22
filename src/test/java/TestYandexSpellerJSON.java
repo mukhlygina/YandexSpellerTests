@@ -25,75 +25,97 @@ public class TestYandexSpellerJSON {
     public void simpleSpellerApiCall() {
         RestAssured
                 .given()
-                .queryParam(PARAM_TEXT, wrongWordEn)
-                .parameters(PARAM_LANG, Languages.EN)
-                .formParameter(PARAM_OPTIONS, "1")
-                .and()
-                .accept(ContentType.JSON)
-                .auth().basic("abcName", "abcPassword")
-                .header("custom header1", "header1.value")
-                .and()
-                .body("some body payroll")
-                .log().everything()
-                .when().get(YANDEX_SPELLER_API_URI)
-                .prettyPeek()
+                    .queryParam(PARAM_TEXT, wrongWordEn)
+                    .parameters(PARAM_LANG, Languages.EN)
+                    .formParameter(PARAM_OPTIONS, "1")
+                    .and()
+                    .accept(ContentType.JSON)
+                    .auth().basic("abcName", "abcPassword")
+                    .header("custom header1", "header1.value")
+                    .and()
+                    .body("some body payroll")
+                    .log().everything()
+                .when()
+                    .get(YANDEX_SPELLER_API_URI)
+                    .prettyPeek()
                 .then()
-                .assertThat()
-                .statusCode(HttpStatus.SC_OK)
-                .body(Matchers.allOf(
-                        Matchers.stringContainsInOrder(Arrays.asList(wrongWordEn, rightWordEn)),
-                        Matchers.containsString("\"code\":1")))
-                .contentType(ContentType.JSON)
-                .time(lessThan(2000L)); // Milliseconds
+                    .assertThat()
+                    .statusCode(HttpStatus.SC_OK)
+                    .body(Matchers.allOf(
+                            Matchers.stringContainsInOrder(Arrays.asList(wrongWordEn, rightWordEn)),
+                            Matchers.containsString("\"code\":1")))
+                    .contentType(ContentType.JSON)
+                    .time(lessThan(2000L)); // Milliseconds
     }
 
     // different http methods calls
     @Test
     public void spellerApiCallsWithDifferentMethods() {
         //GET
-        RestAssured.given().param(PARAM_TEXT, wrongWordEn)
-                .log().everything()
-                .get(YANDEX_SPELLER_API_URI).prettyPeek();
+        RestAssured
+                .given()
+                    .param(PARAM_TEXT, wrongWordEn)
+                    .log().everything()
+                .get(YANDEX_SPELLER_API_URI)
+                    .prettyPeek();
         System.out.println("\n=====================================================================");
 
         //POST
-        RestAssured.given().param(PARAM_TEXT, wrongWordEn)
-                .log().everything()
-                .post(YANDEX_SPELLER_API_URI).prettyPeek();
+        RestAssured
+                .given()
+                    .param(PARAM_TEXT, wrongWordEn)
+                    .log().everything()
+                .post(YANDEX_SPELLER_API_URI)
+                    .prettyPeek();
         System.out.println("\n=====================================================================");
 
         //HEAD
-        RestAssured.given().param(PARAM_TEXT, wrongWordEn)
-                .log().everything()
-                .head(YANDEX_SPELLER_API_URI).prettyPeek();
+        RestAssured
+                .given()
+                    .param(PARAM_TEXT, wrongWordEn)
+                    .log().everything()
+                .head(YANDEX_SPELLER_API_URI)
+                    .prettyPeek();
         System.out.println("\n=====================================================================");
 
         //OPTIONS
-        RestAssured.given().param(PARAM_TEXT, wrongWordEn)
-                .log().everything()
-                .options(YANDEX_SPELLER_API_URI).prettyPeek();
+        RestAssured
+                .given()
+                    .param(PARAM_TEXT, wrongWordEn)
+                    .log().everything()
+                .options(YANDEX_SPELLER_API_URI)
+                .prettyPeek();
         System.out.println("\n=====================================================================");
 
         //PUT
-        RestAssured.given().param(PARAM_TEXT, wrongWordEn)
-                .log().everything()
-                .put(YANDEX_SPELLER_API_URI).prettyPeek();
+        RestAssured
+                .given()
+                    .param(PARAM_TEXT, wrongWordEn)
+                    .log().everything()
+                .put(YANDEX_SPELLER_API_URI)
+                    .prettyPeek();
         System.out.println("\n=====================================================================");
 
         //PATCH
-        RestAssured.given().param(PARAM_TEXT, wrongWordEn)
-                .log().everything()
-                .patch(YANDEX_SPELLER_API_URI).prettyPeek();
+        RestAssured
+                .given()
+                    .param(PARAM_TEXT, wrongWordEn)
+                    .log()
+                    .everything()
+                .patch(YANDEX_SPELLER_API_URI)
+                    .prettyPeek();
         System.out.println("\n=====================================================================");
 
         //DELETE
-        RestAssured.given().param(PARAM_TEXT, wrongWordEn)
-                .log().everything()
+        RestAssured
+                .given()
+                    .param(PARAM_TEXT, wrongWordEn)
+                    .log()
+                    .everything()
                 .delete(YANDEX_SPELLER_API_URI).prettyPeek()
                 .then()
-//                .body(isEmptyOrNullString())
-                .statusCode(HttpStatus.SC_METHOD_NOT_ALLOWED)
-                .statusLine("HTTP/1.1 405 Method not allowed");
+                    .statusCode(HttpStatus.SC_METHOD_NOT_ALLOWED)
+                    .statusLine("HTTP/1.1 405 Method not allowed");
     }
 
 
