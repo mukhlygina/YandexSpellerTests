@@ -1,6 +1,8 @@
+import com.jayway.restassured.path.xml.XmlPath;
 import core.YandexSpellerSOAP;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static core.YandexSpellerConstants.Languages;
@@ -14,19 +16,21 @@ public class TestYandexSpellerSOAP {
 
     @Test
     public void simpleCall(){
-        YandexSpellerSOAP.with().callSOAP()
-        .then().statusCode(HttpStatus.SC_OK)
-        .body("//error+code", Matchers.equalTo("FAILURE"))
-//        .("//word", Matchers.equalTo(wrongWordEn));
-        ;
+        Assert.assertTrue(
+                YandexSpellerSOAP
+                        .with()
+                        .callSOAP()
+                        .getBody()
+                        .asString()
+                        .contains("requisitee"));
     }
-
 
     @Test
     public void useRequestBuilderToChangeParams(){
         YandexSpellerSOAP.with()
                 .language(Languages.UK)
                 .options("5")
-                .text(wrongWordUK).callSOAP();
+                .text(wrongWordUK)
+                .callSOAP();
     }
 }
