@@ -4,7 +4,6 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static core.YandexSpellerConstants.Languages;
-import static core.YandexSpellerConstants.wrongWordEn;
 import static core.YandexSpellerConstants.wrongWordUK;
 
 /**
@@ -17,9 +16,11 @@ public class TestYandexSpellerSOAP {
     public void simpleCall(){
         YandexSpellerSOAP.with().callSOAP()
         .then().statusCode(HttpStatus.SC_OK)
-
-        .content("//.word", Matchers.equalTo(wrongWordEn));
+        .body("//error+code", Matchers.equalTo("FAILURE"))
+//        .("//word", Matchers.equalTo(wrongWordEn));
+        ;
     }
+
 
     @Test
     public void useRequestBuilderToChangeParams(){
@@ -27,10 +28,5 @@ public class TestYandexSpellerSOAP {
                 .language(Languages.UK)
                 .options("5")
                 .text(wrongWordUK).callSOAP();
-    }
-
-    @Test
-    public void validateResponse(){
-
     }
 }
