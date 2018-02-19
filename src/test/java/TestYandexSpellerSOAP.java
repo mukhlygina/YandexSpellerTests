@@ -24,9 +24,11 @@ public class TestYandexSpellerSOAP {
     @Test
     public void useRequestBuilderToChangeParams(){
         YandexSpellerSOAP.with()
-                .language(Languages.UK)
-                .options("5")
-                .text(wrongWordUK)
-                .callSOAP();
+                .language(Languages.EN)
+                .text(wrongWordEn)
+                .options("6")
+                .callSOAP()
+                .then()
+                .body(Matchers.stringContainsInOrder(Arrays.asList(wrongWordEn, rightWordEn)));
     }
 }
