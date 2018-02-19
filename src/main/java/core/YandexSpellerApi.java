@@ -69,7 +69,7 @@ public class YandexSpellerApi {
 
     //get ready Speller answers list form api response
     public static List<YandexSpellerAnswer> getYandexSpellerAnswers(Response response){
-        return new Gson().fromJson(response.asString(), new TypeToken<List<YandexSpellerAnswer>>() {}.getType());
+        return new Gson().fromJson( response.asString().trim(), new TypeToken<List<YandexSpellerAnswer>>() {}.getType());
     }
 
 

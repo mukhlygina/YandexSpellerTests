@@ -56,7 +56,7 @@ public class YandexSpellerSOAP {
                     "   <soapenv:Body>\n" +
                     "      <spel:CheckTextRequest lang=" + (spellerSOAP.params.getOrDefault(PARAM_LANG, "\"en\""))
                     +  " options=" + (spellerSOAP.params.getOrDefault(PARAM_OPTIONS, "\"0\""))+ " format=\"\">\n" +
-                    "         <spel:text>"+ (spellerSOAP.params.getOrDefault(PARAM_TEXT, wrongWordEn)) + "</spel:text>\n" +
+                    "         <spel:text>"+ (spellerSOAP.params.getOrDefault(PARAM_TEXT, WRONG_WORD_EN)) + "</spel:text>\n" +
                     "      </spel:CheckTextRequest>\n" +
                     "   </soapenv:Body>\n" +
                     "</soapenv:Envelope>";

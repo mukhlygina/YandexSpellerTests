@@ -25,7 +25,7 @@ public class TestYandexSpellerJSON {
     public void simpleSpellerApiCall() {
         RestAssured
                 .given()
-                    .queryParam(PARAM_TEXT, wrongWordEn)
+                    .queryParam(PARAM_TEXT, WRONG_WORD_EN)
                     .params(PARAM_LANG, Languages.EN, "CustomParameter", "valueOfParam")
                     .accept(ContentType.JSON)
                     .auth().basic("abcName", "abcPassword")
@@ -37,10 +37,11 @@ public class TestYandexSpellerJSON {
                     .get(YANDEX_SPELLER_API_URI)
                     .prettyPeek()
                 .then()
+
                     .assertThat()
                     .statusCode(HttpStatus.SC_OK)
                     .body(Matchers.allOf(
-                            Matchers.stringContainsInOrder(Arrays.asList(wrongWordEn, rightWordEn)),
+                            Matchers.stringContainsInOrder(Arrays.asList(WRONG_WORD_EN, RIGHT_WORD_EN)),
                             Matchers.containsString("\"code\":1")))
                     .contentType(ContentType.JSON)
                     .time(lessThan(20000L)); // Milliseconds
@@ -52,7 +53,7 @@ public class TestYandexSpellerJSON {
         //GET
         RestAssured
                 .given()
-                    .param(PARAM_TEXT, wrongWordEn)
+                    .param(PARAM_TEXT, WRONG_WORD_EN)
                     .log().everything()
                 .get(YANDEX_SPELLER_API_URI)
                     .prettyPeek();
@@ -61,7 +62,7 @@ public class TestYandexSpellerJSON {
         //POST
         RestAssured
                 .given()
-                    .param(PARAM_TEXT, wrongWordEn)
+                    .param(PARAM_TEXT, WRONG_WORD_EN)
                     .log().everything()
                 .post(YANDEX_SPELLER_API_URI)
                     .prettyPeek();
@@ -70,7 +71,7 @@ public class TestYandexSpellerJSON {
         //HEAD
         RestAssured
                 .given()
-                    .param(PARAM_TEXT, wrongWordEn)
+                    .param(PARAM_TEXT, WRONG_WORD_EN)
                     .log().everything()
                 .head(YANDEX_SPELLER_API_URI)
                     .prettyPeek();
@@ -79,7 +80,7 @@ public class TestYandexSpellerJSON {
         //OPTIONS
         RestAssured
                 .given()
-                    .param(PARAM_TEXT, wrongWordEn)
+                    .param(PARAM_TEXT, WRONG_WORD_EN)
                     .log().everything()
                 .options(YANDEX_SPELLER_API_URI)
                 .prettyPeek();
@@ -88,7 +89,7 @@ public class TestYandexSpellerJSON {
         //PUT
         RestAssured
                 .given()
-                    .param(PARAM_TEXT, wrongWordEn)
+                    .param(PARAM_TEXT, WRONG_WORD_EN)
                     .log().everything()
                 .put(YANDEX_SPELLER_API_URI)
                     .prettyPeek();
@@ -97,7 +98,7 @@ public class TestYandexSpellerJSON {
         //PATCH
         RestAssured
                 .given()
-                    .param(PARAM_TEXT, wrongWordEn)
+                    .param(PARAM_TEXT, WRONG_WORD_EN)
                     .log()
                     .everything()
                 .patch(YANDEX_SPELLER_API_URI)
@@ -107,7 +108,7 @@ public class TestYandexSpellerJSON {
         //DELETE
         RestAssured
                 .given()
-                    .param(PARAM_TEXT, wrongWordEn)
+                    .param(PARAM_TEXT, WRONG_WORD_EN)
                     .log()
                     .everything()
                 .delete(YANDEX_SPELLER_API_URI).prettyPeek()
@@ -122,7 +123,7 @@ public class TestYandexSpellerJSON {
     public void useBaseRequestAndResponseSpecifications() {
         RestAssured
                 .given(YandexSpellerApi.baseRequestConfiguration())
-                .param(PARAM_TEXT, wrongWordEn)
+                .param(PARAM_TEXT, WRONG_WORD_EN)
                 .get().prettyPeek()
                 .then().specification(YandexSpellerApi.successResponse());
     }
@@ -132,7 +133,7 @@ public class TestYandexSpellerJSON {
                 YandexSpellerApi.with()
                         .language(Languages.UK)
                         .options("5")
-                        .text(wrongWordUK)
+                        .text(WRONG_WORD_UK)
                         .callApi()
                 .then().specification(YandexSpellerApi.successResponse());
     }
@@ -143,13 +144,37 @@ public class TestYandexSpellerJSON {
     public void validateSpellerAnswerAsAnObject() {
         List<YandexSpellerAnswer> answers =
                 YandexSpellerApi.getYandexSpellerAnswers(
-                        YandexSpellerApi.with().text("motherr fatherr," + wrongWordEn).callApi());
+                        YandexSpellerApi.with().text("motherr fatherr," + WRONG_WORD_EN).callApi());
         assertThat("expected number of answers is wrong.", answers.size(), equalTo(3));
         assertThat(answers.get(0).word, equalTo("motherr"));
         assertThat(answers.get(1).word, equalTo("fatherr"));
         assertThat(answers.get(0).s.get(0), equalTo("mother"));
         assertThat(answers.get(1).s.get(0), equalTo("father"));
-        assertThat(answers.get(2).s.get(0), equalTo(rightWordEn));
+        assertThat(answers.get(2).s.get(0), equalTo(RIGHT_WORD_EN));
     }
+
+
+    @Test
+    public void optionsValueIgnoreDigits(){
+        List<YandexSpellerAnswer> answers =
+                YandexSpellerApi.getYandexSpellerAnswers(
+                        YandexSpellerApi.with().
+                                text(WORD_WITH_LEADING_DIGITS)
+                                .options("2")
+                                .callApi());
+        assertThat("expected number of answers is wrong.", answers.size(), equalTo(0));
+    }
+
+    @Test
+    public void optionsIgnoreWrongCapital(){
+        List<YandexSpellerAnswer> answers =
+                YandexSpellerApi.getYandexSpellerAnswers(
+                        YandexSpellerApi.with().
+                                text(WORD_WITH_WRONG_CAPITAL)
+                                .options("512")
+                                .callApi());
+        assertThat("expected number of answers is wrong.", answers.size(), equalTo(0));
+    }
+
 
 }
