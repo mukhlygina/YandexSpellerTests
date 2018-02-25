@@ -43,13 +43,18 @@ public class YandexSpellerApi {
             return this;
         }
 
-        public ApiBuilder options(String options) {
-            spellerApi.params.put(PARAM_OPTIONS, options);
+        public ApiBuilder options(Option option) {
+            spellerApi.params.put(PARAM_OPTIONS, option.optionNumber);
             return this;
         }
 
         public ApiBuilder language(Languages language) {
             spellerApi.params.put(PARAM_LANG, language.languageCode);
+            return this;
+        }
+
+        public ApiBuilder format(Format format) {
+            spellerApi.params.put(PARAM_FORMAT, format.parameter);
             return this;
         }
 

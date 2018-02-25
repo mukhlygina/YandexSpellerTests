@@ -1,6 +1,6 @@
 import core.YandexSpellerSOAP;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.util.Arrays;
 

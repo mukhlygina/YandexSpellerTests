@@ -4,12 +4,15 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static core.YandexSpellerConstants.*;
+import static core.YandexSpellerConstants.Option.IGNORE_CAPITALIZATION;
+import static core.YandexSpellerConstants.Option.IGNORE_DIGITS;
+import static core.YandexSpellerConstants.Option.WRONG_OPTION;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.lessThan;
@@ -132,7 +135,7 @@ public class TestYandexSpellerJSON {
     public void reachBuilderUsage(){
                 YandexSpellerApi.with()
                         .language(Languages.UK)
-                        .options("5")
+                        .options(WRONG_OPTION)
                         .text(WRONG_WORD_UK)
                         .callApi()
                 .then().specification(YandexSpellerApi.successResponse());
@@ -160,7 +163,7 @@ public class TestYandexSpellerJSON {
                 YandexSpellerApi.getYandexSpellerAnswers(
                         YandexSpellerApi.with().
                                 text(WORD_WITH_LEADING_DIGITS)
-                                .options("2")
+                                .options(IGNORE_DIGITS)
                                 .callApi());
         assertThat("expected number of answers is wrong.", answers.size(), equalTo(0));
     }
@@ -171,7 +174,7 @@ public class TestYandexSpellerJSON {
                 YandexSpellerApi.getYandexSpellerAnswers(
                         YandexSpellerApi.with().
                                 text(WORD_WITH_WRONG_CAPITAL)
-                                .options("512")
+                                .options(IGNORE_CAPITALIZATION)
                                 .callApi());
         assertThat("expected number of answers is wrong.", answers.size(), equalTo(0));
     }

@@ -15,7 +15,10 @@ public class YandexSpellerConstants {
     public static final String RIGHT_WORD_EN = "requisite";
     public static final String WRONG_WORD_UK = "питаня";
     public static final String WORD_WITH_WRONG_CAPITAL = "moscow";
-    public static final String WORD_WITH_LEADING_DIGITS = "11" + RIGHT_WORD_EN;
+    public static final String WORD_WITH_LEADING_DIGITS = "12" + RIGHT_WORD_EN;
+    public static final String PARAM_FORMAT = "format";
+    public static final String REPEAT_WORDS = "я полетел на на Кипр";
+    public static final String CHECK_URL = "https://tech.yandex.ru";
 
 
     public enum Languages {
@@ -26,6 +29,32 @@ public class YandexSpellerConstants {
 
         private Languages(String lang) {
             this.languageCode = lang;
+        }
+    }
+
+    public enum Format {
+        PLAIN("plain"),
+        HTML("html");
+
+        String parameter;
+
+        Format(String parameter) {
+            this.parameter = parameter;
+        }
+    }
+
+    public enum Option {
+        DEFAULT("0"),
+        IGNORE_DIGITS("2"),
+        IGNORE_URLS("4"),
+        FIND_REPEAT_WORDS("8"),
+        IGNORE_CAPITALIZATION("512"),
+        WRONG_OPTION("5");
+
+        String optionNumber;
+
+        Option(String optionNumber) {
+            this.optionNumber = optionNumber;
         }
     }
 }
